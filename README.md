@@ -1,14 +1,16 @@
 Leaflet fullscreen mode
 =======================
 
-An improved / cleaned up version of [brunob/leaflet.fullscreen](https://github.com/brunob/leaflet.fullscreen), adding a fullscreen button below the map's zomm controls.
+An improved / cleaned up version of [brunob/leaflet.fullscreen](https://github.com/brunob/leaflet.fullscreen), adding a fullscreen button below the map's zoom controls.
 
-- Uses fullscreen icon from http://glyphicons.com/
+- Uses browser's native fullscreen API whenever possible
+- Gracefully falls back to pseudo-fullscreen if browser doesn't support fullscreen API (i.e. makes the map container cover the whole screen and be on top of everything)
+- No need for you to define fullscreen style, just include the CSS file that comes with the plugin
 - Uses same control definition as leaflet's internal zoom controls, allowing for direct initialization with the map:
 
   `var map = new L.Map('map', {
     fullscreenControl: true
   });`
-- Adds a separate control below the zoom controls, not using the same container
+- Adds a separate control below the zoom controls, doesn't use the same container
 
 For a demo see [here](http://jtreml.github.com/leaflet.fullscreen/example.html).
