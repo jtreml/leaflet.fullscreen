@@ -11,4 +11,4 @@ An improved / cleaned up version of [brunob/leaflet.fullscreen](https://github.c
   });`
 - Adds a separate control below the zoom controls, not using the same container
 
-For a demo see [here]().
+For a demo see [here](http://jtreml.github.com/leaflet.fullscreen/example.html).
