@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="leaflet/leaflet.css" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="leaflet/leaflet.ie.css" /><![endif]-->
+		<link rel="stylesheet" href="leaflet.fullscreen/leaflet.fullscreen.css" />
+
+		<script src="leaflet/leaflet.js"></script>
+		<script src="leaflet.fullscreen/leaflet.fullscreen.js"></script>
+
+		<style>
+			#map:-webkit-full-screen {
+				width: 100% !important;
+				height: 100% !important;
+			}
+
+			#map:-moz-full-screen {
+				width: 100% !important;
+				height: 100% !important;
+			}
+			
+			#map:full-screen {
+				width: 100% !important;
+				height: 100% !important;
+			}
+		</style>
+	</head>
+	
+	<body>
+		<div id="map" style="width: 640px; height: 480px;"></div>
+
+		<script type="text/javascript">
+
+			var layerOsm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	          subdomains: ["a", "b", "c"],
+	          maxZoom: 18
+	        });
+
+			
+			var map = new L.Map('map', {
+				fullscreenControl: true
+			}).addLayer(layerOsm).setView(new L.LatLng(40.524724, -3.816153), 7);
+		</script>
+	</body>
+</html>

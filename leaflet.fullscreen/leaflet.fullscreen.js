@@ -1,39 +1,33 @@
-L.Control.FullScreen = L.Control.extend({
+L.Control.Fullscreen = L.Control.extend({
 	options: {
 		position: 'topleft'
 	},
-	
+
 	onAdd: function (map) {
-		var containerClass = 'leaflet-control-zoom', className, container;
-		
-		if(map.zoomControl) {
-			container = map.zoomControl._container;
-			className = '-fullscreen last';
-		} else {
-			container = L.DomUtil.create('div', containerClass);
-			className = '-fullscreen';
-		}
-		
-		this._createButton('Full Screen', containerClass + className, container, this.toogleFullScreen, map);
+		var className = 'leaflet-control-zoom',
+		    container = L.DomUtil.create('div', className);
+
+		this._createButton('Toggle fullscreen', 'leaflet-control-fullscreen', container, this._toogleFullScreen, map);
 
 		return container;
 	},
-	
+
 	_createButton: function (title, className, container, fn, context) {
 		var link = L.DomUtil.create('a', className, container);
 		link.href = '#';
 		link.title = title;
 
 		L.DomEvent
-			.addListener(link, 'click', L.DomEvent.stopPropagation)
-			.addListener(link, 'click', L.DomEvent.preventDefault)
-			.addListener(link, 'click', fn, context);
-		
+			.on(link, 'click', L.DomEvent.stopPropagation)
+			.on(link, 'click', L.DomEvent.preventDefault)
+			.on(link, 'click', fn, context)
+			.on(link, 'dblclick', L.DomEvent.stopPropagation);
+
 		L.DomEvent
 			.addListener(container, fullScreenApi.fullScreenEventName, L.DomEvent.stopPropagation)
 			.addListener(container, fullScreenApi.fullScreenEventName, L.DomEvent.preventDefault)
 			.addListener(container, fullScreenApi.fullScreenEventName, this._handleEscKey, context);
-		
+
 		L.DomEvent
 			.addListener(document, fullScreenApi.fullScreenEventName, L.DomEvent.stopPropagation)
 			.addListener(document, fullScreenApi.fullScreenEventName, L.DomEvent.preventDefault)
@@ -41,8 +35,8 @@ L.Control.FullScreen = L.Control.extend({
 
 		return link;
 	},
-	
-	toogleFullScreen: function () {
+
+	_toogleFullScreen: function () {
 		if (fullScreenApi.supportsFullScreen){
 			var container = this._container;
 			if(fullScreenApi.isFullScreen(container)){
@@ -55,13 +49,28 @@ L.Control.FullScreen = L.Control.extend({
 			}
 		}
 	},
-	
+
 	_handleEscKey: function () {
 		if(!fullScreenApi.isFullScreen(this)){
 			this.fire('exitFullscreen');
 		}
 	}
 });
+
+L.Map.mergeOptions({
+	fullscreenControl: false
+});
+
+L.Map.addInitHook(function () {
+	if (this.options.fullscreenControl) {
+		this.fullscreenControl = new L.Control.Fullscreen();
+		this.addControl(this.fullscreenControl);
+	}
+});
+
+L.control.fullscreen = function (options) {
+	return new L.Control.Fullscreen(options);
+};
 
 /* 
 Native FullScreen JavaScript API
@@ -83,7 +92,7 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 			prefix: ''
 		},
 		browserPrefixes = 'webkit moz o ms khtml'.split(' ');
-	
+
 	// check for native support
 	if (typeof document.cancelFullScreen != 'undefined') {
 		fullScreenApi.supportsFullScreen = true;
@@ -91,19 +100,19 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 		// check for fullscreen support by vendor prefix
 		for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
 			fullScreenApi.prefix = browserPrefixes[i];
-			
+
 			if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] != 'undefined' ) {
 				fullScreenApi.supportsFullScreen = true;
-				
+
 				break;
 			}
 		}
 	}
-	
+
 	// update methods to do something useful
 	if (fullScreenApi.supportsFullScreen) {
 		fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
-		
+
 		fullScreenApi.isFullScreen = function() {
 			switch (this.prefix) {	
 				case '':
@@ -125,7 +134,7 @@ source : http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugi
 	// jQuery plugin
 	if (typeof jQuery != 'undefined') {
 		jQuery.fn.requestFullScreen = function() {
-	
+
 			return this.each(function() {
 				var el = jQuery(this);
 				if (fullScreenApi.supportsFullScreen) {
