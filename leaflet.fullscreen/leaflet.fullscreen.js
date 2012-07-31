@@ -7,12 +7,12 @@ L.Control.Fullscreen = L.Control.extend({
 		var className = 'leaflet-control-zoom',
 		    container = L.DomUtil.create('div', className);
 
-		this._createButton('Toggle fullscreen', 'leaflet-control-fullscreen', container, this._toogleFullScreen, map);
+		this._createButton('Toggle fullscreen', 'leaflet-control-fullscreen', container, this._toogleFullScreen);
 
 		return container;
 	},
 
-	_createButton: function (title, className, container, fn, context) {
+	_createButton: function (title, className, container, fn) {
 		var link = L.DomUtil.create('a', className, container),
 			fullScreenApi = L.Control.Fullscreen.api;
 
@@ -22,56 +22,57 @@ L.Control.Fullscreen = L.Control.extend({
 		L.DomEvent
 			.on(link, 'click', L.DomEvent.stopPropagation)
 			.on(link, 'click', L.DomEvent.preventDefault)
-			.on(link, 'click', fn, context)
+			.on(link, 'click', fn, this)
 			.on(link, 'dblclick', L.DomEvent.stopPropagation);
 
 		L.DomEvent
 			.addListener(container, fullScreenApi.fullScreenEventName, L.DomEvent.stopPropagation)
 			.addListener(container, fullScreenApi.fullScreenEventName, L.DomEvent.preventDefault)
-			.addListener(container, fullScreenApi.fullScreenEventName, this._handleEscKey, context);
+			.addListener(container, fullScreenApi.fullScreenEventName, this._handleEscKey, this);
 
 		L.DomEvent
 			.addListener(document, fullScreenApi.fullScreenEventName, L.DomEvent.stopPropagation)
 			.addListener(document, fullScreenApi.fullScreenEventName, L.DomEvent.preventDefault)
-			.addListener(document, fullScreenApi.fullScreenEventName, this._handleEscKey, context);
+			.addListener(document, fullScreenApi.fullScreenEventName, this._handleEscKey, this);
 
 		if(!fullScreenApi.supportsFullScreen) {
-			L.DomEvent.addListener(document, 'keydown', this._onKeyDown, context);
+			L.DomEvent.addListener(document, 'keydown', this._onKeyDown, this);
 		}
 
 		return link;
 	},
 
 	_toogleFullScreen: function () {
-		var container = this._container,
+		var map = this._map, container = map._container,
 			fullScreenApi = L.Control.Fullscreen.api;
 
 		if (fullScreenApi.supportsFullScreen) {
 			if(fullScreenApi.isFullScreen(container)) {
 				fullScreenApi.cancelFullScreen(container);
-				this.fire('exitFullscreen');
+				map.fire('exitFullscreen');
 			} else {
 				fullScreenApi.requestFullScreen(container);
-				this.fire('enterFullscreen');
+				map.fire('enterFullscreen');
 			}
 		} else {
 			if(L.DomUtil.hasClass(container, 'leaflet-fullscreen')) {
 				L.DomUtil.removeClass(container, 'leaflet-fullscreen');
-				this.fire('exitFullscreen');
+				map.fire('exitFullscreen');
 				
 			} else {
 				L.DomUtil.addClass(container, 'leaflet-fullscreen');
-				this.fire('enterFullscreen');
+				map.fire('enterFullscreen');
 			}
-			this.invalidateSize();
+			map.invalidateSize();
 		}
 	},
 
 	_handleEscKey: function () {
-		var fullScreenApi = L.Control.Fullscreen.api;
-		
-		if(!fullScreenApi.isFullScreen(this)){
-			this.fire('exitFullscreen');
+		var map = this._map, 
+			fullScreenApi = L.Control.Fullscreen.api;
+
+		if(!fullScreenApi.isFullScreen(map)){
+			map.fire('exitFullscreen');
 		}
 	},
 
@@ -80,14 +81,15 @@ L.Control.Fullscreen = L.Control.extend({
 			return;
 		}
 
-		var container = this._container;
+		var map = this._map,
+			container = map._container;
 
 		if(!L.DomUtil.hasClass(container, 'leaflet-fullscreen')) {
 			return;
 		}
 
 		L.DomUtil.removeClass(container, 'leaflet-fullscreen');
-		this.fire('exitFullscreen');
+		map.fire('exitFullscreen');
 		L.DomEvent.stop(e);
 	}
 });
