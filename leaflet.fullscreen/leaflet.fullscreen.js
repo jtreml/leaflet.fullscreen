@@ -13,7 +13,9 @@ L.Control.Fullscreen = L.Control.extend({
 	},
 
 	_createButton: function (title, className, container, fn, context) {
-		var link = L.DomUtil.create('a', className, container);
+		var link = L.DomUtil.create('a', className, container),
+			fullScreenApi = L.Control.Fullscreen.api;
+
 		link.href = '#';
 		link.title = title;
 
@@ -41,7 +43,8 @@ L.Control.Fullscreen = L.Control.extend({
 	},
 
 	_toogleFullScreen: function () {
-		var container = this._container;
+		var container = this._container,
+			fullScreenApi = L.Control.Fullscreen.api;
 
 		if (fullScreenApi.supportsFullScreen) {
 			if(fullScreenApi.isFullScreen(container)) {
@@ -65,6 +68,8 @@ L.Control.Fullscreen = L.Control.extend({
 	},
 
 	_handleEscKey: function () {
+		var fullScreenApi = L.Control.Fullscreen.api;
+		
 		if(!fullScreenApi.isFullScreen(this)){
 			this.fire('exitFullscreen');
 		}
@@ -102,13 +107,12 @@ L.control.fullscreen = function (options) {
 	return new L.Control.Fullscreen(options);
 };
 
-
 // Wrapper for browser-dependent native fullscreen API
 //
 // Source
 //   http://johndyer.name/native-fullscreen-javascript-api-plus-jquery-plugin/ via
 //   https://github.com/brunob/leaflet.fullscreen
-(function() {
+L.Control.Fullscreen.api = (function() {
 	var fullScreenApi = { 
 			supportsFullScreen: false,
 			isFullScreen: function() { return false; }, 
@@ -156,6 +160,5 @@ L.control.fullscreen = function (options) {
 		};
 	}
 
-	// Export api
-	window.fullScreenApi = fullScreenApi;	
-})();
+	return fullScreenApi;	
+}());
