@@ -1,6 +1,7 @@
 L.Control.Fullscreen = L.Control.extend({
 	options: {
-		position: 'topleft'
+		position: 'topleft',
+		fullscreenNative: true
 	},
 
 	onAdd: function (map) {
@@ -35,7 +36,7 @@ L.Control.Fullscreen = L.Control.extend({
 			.addListener(document, fullScreenApi.fullScreenEventName, L.DomEvent.preventDefault)
 			.addListener(document, fullScreenApi.fullScreenEventName, this._handleEscKey, this);
 
-		if(!fullScreenApi.supportsFullScreen) {
+		if(this.options.fullscreenNative && !fullScreenApi.supportsFullScreen) {
 			L.DomEvent.addListener(document, 'keydown', this._onKeyDown, this);
 		}
 
@@ -46,21 +47,25 @@ L.Control.Fullscreen = L.Control.extend({
 		var map = this._map, container = map._container,
 			fullScreenApi = L.Control.Fullscreen.api;
 
-		if (fullScreenApi.supportsFullScreen) {
+		if (this.options.fullscreenNative && fullScreenApi.supportsFullScreen) {
 			if(fullScreenApi.isFullScreen(container)) {
 				fullScreenApi.cancelFullScreen(container);
+				L.DomUtil.removeClass(this._container, 'leaflet-control-fullscreen-on');
 				map.fire('exitFullscreen');
 			} else {
 				fullScreenApi.requestFullScreen(container);
+				L.DomUtil.addClass(this._container, 'leaflet-control-fullscreen-on');
 				map.fire('enterFullscreen');
 			}
 		} else {
 			if(L.DomUtil.hasClass(container, 'leaflet-fullscreen')) {
 				L.DomUtil.removeClass(container, 'leaflet-fullscreen');
+				L.DomUtil.removeClass(this._container, 'leaflet-control-fullscreen-on');
 				map.fire('exitFullscreen');
 				
 			} else {
 				L.DomUtil.addClass(container, 'leaflet-fullscreen');
+				L.DomUtil.addClass(this._container, 'leaflet-control-fullscreen-on');
 				map.fire('enterFullscreen');
 			}
 			map.invalidateSize();
@@ -72,6 +77,7 @@ L.Control.Fullscreen = L.Control.extend({
 			fullScreenApi = L.Control.Fullscreen.api;
 
 		if(!fullScreenApi.isFullScreen(map)){
+			L.DomUtil.removeClass(this._container, 'leaflet-control-fullscreen-on');
 			map.fire('exitFullscreen');
 		}
 	},
@@ -89,18 +95,25 @@ L.Control.Fullscreen = L.Control.extend({
 		}
 
 		L.DomUtil.removeClass(container, 'leaflet-fullscreen');
+		L.DomUtil.removeClass(this._container, 'leaflet-control-fullscreen-on');
 		map.fire('exitFullscreen');
+
+		map.invalidateSize();
+		
 		L.DomEvent.stop(e);
 	}
 });
 
 L.Map.mergeOptions({
-	fullscreenControl: false
+	fullscreenControl: false,
+	fullscreenNative: true
 });
 
 L.Map.addInitHook(function () {
 	if (this.options.fullscreenControl) {
-		this.fullscreenControl = new L.Control.Fullscreen();
+		this.fullscreenControl = new L.Control.Fullscreen({
+			fullscreenNative: this.options.fullscreenNative
+		});
 		this.addControl(this.fullscreenControl);
 	}
 });

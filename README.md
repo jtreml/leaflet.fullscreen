@@ -11,6 +11,13 @@ An improved / cleaned up version of [brunob/leaflet.fullscreen](https://github.c
   `var map = new L.Map('map', {
     fullscreenControl: true
   });`
+- Can be forced NOT to use native fullscreen API:
+
+  `var map = new L.Map('map', {
+    fullscreenControl: true,
+    fullscreenNative: false
+  });`
 - Adds a separate control below the zoom controls, doesn't use the same container
+- Visually changes fullscreen button when fullscreen gets activated / deactivated
 
 For a demo see [here](http://jtreml.github.com/leaflet.fullscreen/example.html).

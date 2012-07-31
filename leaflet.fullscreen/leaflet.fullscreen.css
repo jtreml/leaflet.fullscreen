@@ -2,6 +2,10 @@
 	background-image: url(images/icon-fullscreen.png);
 	}
 
+.leaflet-control-fullscreen-on {
+	background-color: #B0DE5C !important;
+	}
+
 .leaflet-container:-webkit-full-screen {
 	position: fixed !important;
 	top: 0 !important;
