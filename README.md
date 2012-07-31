@@ -19,5 +19,6 @@ An improved / cleaned up version of [brunob/leaflet.fullscreen](https://github.c
   });`
 - Adds a separate control below the zoom controls, doesn't use the same container
 - Visually changes fullscreen button when fullscreen gets activated / deactivated
+- Doesn't define global object for native fullscreen API
 
 For a demo see [here](http://jtreml.github.com/leaflet.fullscreen/example.html).
