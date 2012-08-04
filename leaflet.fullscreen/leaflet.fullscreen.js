@@ -68,8 +68,9 @@ L.Control.Fullscreen = L.Control.extend({
 				L.DomUtil.addClass(this._container, 'leaflet-control-fullscreen-on');
 				map.fire('enterFullscreen');
 			}
-			map.invalidateSize();
 		}
+
+		map.invalidateSize();
 	},
 
 	_handleEscKey: function () {
@@ -79,6 +80,7 @@ L.Control.Fullscreen = L.Control.extend({
 		if(!fullScreenApi.isFullScreen(map)){
 			L.DomUtil.removeClass(this._container, 'leaflet-control-fullscreen-on');
 			map.fire('exitFullscreen');
+			map.invalidateSize();
 		}
 	},
 
