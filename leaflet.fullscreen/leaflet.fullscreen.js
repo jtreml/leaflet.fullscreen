@@ -8,7 +8,7 @@ L.Control.Fullscreen = L.Control.extend({
 		var className = 'leaflet-control-zoom',
 		    container = L.DomUtil.create('div', className);
 
-		this._createButton('Toggle fullscreen', 'leaflet-control-fullscreen', container, this._toogleFullScreen);
+		this._createButton('Toggle fullscreen', 'leaflet-control-fullscreen leaflet-bar leaflet-bar-part', container, this._toogleFullScreen);
 
 		return container;
 	},
