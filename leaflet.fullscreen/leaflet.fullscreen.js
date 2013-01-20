@@ -5,18 +5,19 @@ L.Control.Fullscreen = L.Control.extend({
 	},
 
 	onAdd: function (map) {
-		var className = 'leaflet-control-zoom',
+		var className = 'leaflet-control-zoom leaflet-bar leaflet-control',
 		    container = L.DomUtil.create('div', className);
 
-		this._createButton('Toggle fullscreen', 'leaflet-control-fullscreen leaflet-bar leaflet-bar-part', container, this._toogleFullScreen);
+		this._createButton('&#10064;', 'Toggle fullscreen', 'leaflet-control-fullscreen leaflet-bar-part leaflet-bar-part-top-and-bottom', container, this._toogleFullScreen);
 
 		return container;
 	},
 
-	_createButton: function (title, className, container, fn) {
+	_createButton: function (html, title, className, container, fn) {
 		var link = L.DomUtil.create('a', className, container),
 			fullScreenApi = L.Control.Fullscreen.api;
 
+		link.innerHTML = html;
 		link.href = '#';
 		link.title = title;
 
